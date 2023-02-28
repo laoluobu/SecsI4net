@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+	 
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Secs4Net.Sml" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SerialPortDevice\SerialPortDevice.csproj" />
+  </ItemGroup>
+
+</Project>
