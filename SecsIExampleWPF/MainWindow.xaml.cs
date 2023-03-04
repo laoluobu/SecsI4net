@@ -29,9 +29,18 @@ namespace SecsIExampleWPF
             sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
         }
 
-        public void ShowMessage(byte[] c)
+        public void ShowMessage(MessageHeader c)
         {
-            Console.WriteLine(c);
+
+            this.Dispatcher.BeginInvoke(
+                        new Action(
+                            delegate
+                            {
+                                www.Text = c.ToString();
+                            }
+                            )
+                        );
+            
         }
     }
 }

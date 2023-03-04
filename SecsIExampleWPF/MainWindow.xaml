@@ -19,6 +19,7 @@
             Click="Button_Click"
             Content="S1F1" />
         <TextBlock
+            x:Name="www"
             Width="276"
             Height="342"
             Margin="47,44,0,0"

@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO.Ports;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SerialPortDevice
 {
@@ -12,7 +9,7 @@ namespace SerialPortDevice
 
         private bool Connected;
 
-        public void Connection(string COM, int baudRate, Action<byte[]> dataRecive)
+        public void Connection(string COM, int baudRate, Action<ReadOnlyMemory<byte>> dataRecive)
         {
             if (Port!=null) return;
             try
@@ -32,7 +29,8 @@ namespace SerialPortDevice
                 {
                     byte[] bytesData = new byte[Port.BytesToRead];
                     Port.Read(bytesData, 0, bytesData.Length);
-                    dataRecive.Invoke(bytesData);
+                    if(bytesData.Length<1) return;
+                    dataRecive.Invoke(new ReadOnlyMemory<byte>(bytesData));
                 };
                 Port.ReadTimeout = 1000;
                 Port.WriteTimeout = 1000;
@@ -67,7 +65,7 @@ namespace SerialPortDevice
 
         public void Dispose()
         {
-           // Port?.Dispose();
+            Port?.Dispose();
         }
     }
 }

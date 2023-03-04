@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace SecsI4net.Enums
 {
-    internal interface SECSIHandshake
+    public interface SECSIHandshake
     {
         /// <summary>
         /// Request to Send
         /// </summary>
-        static byte[] ENQ = new byte[] { 5 };
+        const byte ENQ = 5;
         //Ready to Receive
-        static byte[] EOT = new byte[] { 4 };
+        const byte EOT = 4;
         //Correct Reception
-        static byte[] ACK = new byte[] { 6 };
+        const byte ACK = 6;
         /// <summary>
         /// Incorrect Reception
         /// </summary>
-        static byte[] NAK = new byte[] { 21 };
+        const byte NAK = 21;
     }
 }

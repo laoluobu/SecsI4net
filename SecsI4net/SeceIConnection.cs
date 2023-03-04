@@ -1,4 +1,5 @@
-﻿using System.Buffers;
+﻿using System;
+using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
@@ -17,49 +18,46 @@ namespace SecsI4net
 
         private bool isReadyToReceive;
 
-        private Action<byte[]> MessageRecive;
+        private Action<MessageHeader> MessageRecive;
 
         public int T3=3000;
 
         public ushort deviceId = 0;
 
         public event EventHandler<EventArgs> ConnectionLost;
-        public SeceIConnection(string COM, Action<byte[]> MessageRecive, int baudRate = 9600)
+        public SeceIConnection(string COM, Action<MessageHeader> MessageRecive, int baudRate = 9600)
         {
             Port = new WinSerialPort();
             Port.Connection(COM, baudRate, DataRecive);
             this.MessageRecive = MessageRecive;
         }
 
-        private void DataRecive(byte[] bytes)
+        private void DataRecive(ReadOnlyMemory<byte> bytes)
         {
             if (bytes.Length == 1)
             {
-                if (bytes[0] == SECSIHandshake.ENQ[0])
+                switch (bytes.Span[0])
                 {
-                    Port.Write(SECSIHandshake.EOT);
-                    return;
-                }
-
-                if (bytes[0] == SECSIHandshake.EOT[0])
-                {
-                    isReadyToReceive = true;
-                    return;
-                }
-
-                if (bytes[0] == SECSIHandshake.NAK[0])
-                {
-                    return;
-                }
-
-                if (bytes[0] == SECSIHandshake.ACK[0])
-                {
-                    return;
+                    case SECSIHandshake.ENQ:
+                        Port.Write(new byte[] { SECSIHandshake.EOT });
+                        return;
+                    case SECSIHandshake.EOT:
+                        isReadyToReceive = true;
+                        return;
+                    case SECSIHandshake.NAK:
+                        return;
+                    case SECSIHandshake.ACK:
+                        return;
                 }
             }
-            
-            MessageRecive.Invoke(bytes);
-            Port.Write(SECSIHandshake.ACK);
+            var header = new MessageHeader();
+
+            var messageHaderSeq = bytes.Slice(1, 10);
+            var messageHeaderBytes = new byte[10];
+            messageHaderSeq.CopyTo(messageHeaderBytes);
+            MessageHeader.Decode(messageHeaderBytes, out header);
+            MessageRecive.Invoke(header);
+            Port.Write(new byte[] { SECSIHandshake.ACK });
         }
 
         public void Dispose()
@@ -69,15 +67,9 @@ namespace SecsI4net
 
         public void SendAsync(SecsMessage message)
         {
-            if (msgNo == int.MaxValue)
-            {
-                msgNo = 0;
-            }
-            msgNo++;
-
             using (var buffer = new ArrayPoolBufferWriter<byte>(initialCapacity: 4096))
             {
-                EncodeMessage(message, msgNo, deviceId, buffer);
+                EncodeMessage(message, msgNo == int.MaxValue ? 0 : msgNo++, deviceId, buffer);
                 ReadOnlyMemory<byte> msg=buffer.WrittenMemory;
                 ActionSendData(msg);
             }
@@ -87,7 +79,7 @@ namespace SecsI4net
         {
            await Task.Run(() =>
             {
-                Port.Write(SECSIHandshake.ENQ);
+                Port.Write(new byte[] { SECSIHandshake.ENQ });
                 int i = 0;
                 while (true)
                 {
@@ -98,12 +90,13 @@ namespace SecsI4net
                     }
                     if (i > T3)
                     {
-                        throw new Exception("T3 time out！");
+                       throw new TimeoutException("T3 time out");
                     }
                     i++;
                     Thread.Sleep(1);
                 }
                 Port.SendAsync(msg);
+                
             });
         }
 
@@ -135,7 +128,7 @@ namespace SecsI4net
 
         public void SendAsync(byte[] message)
         {
-            Port.Write(SECSIHandshake.ENQ);
+            Port.Write(new byte[] { SECSIHandshake.ENQ });
             Port.Write(message);
         }
 
@@ -151,5 +144,7 @@ namespace SecsI4net
             data.Write((byte)((cks & 0xff00) >> 8));
             data.Write((byte)(cks & 0xff));
         }
+
+     
     }
 }
