@@ -20,7 +20,7 @@
             Content="S1F1" />
         <TextBlock
             Width="276"
-            Height="203"
+            Height="342"
             Margin="47,44,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"

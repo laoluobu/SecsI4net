@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using Secs4Net;
 using Secs4Net.Sml;
 using SecsI4net;
 
@@ -35,11 +34,6 @@ namespace SecsIExampleWPF
         public void ShowMessage(byte[] c)
         {
             Console.WriteLine(c);
-        }
-
-        private void Button_Click1(object sender, RoutedEventArgs e)
-        {
-            sss.SendAsync(new byte[] { 10, 0, 0, 129, 1, 128, 1, 21, 39, 19, 126, 1, 208 });
         }
     }
 }
