@@ -51,7 +51,6 @@ namespace SecsI4net
                     return;
                 }
 
-
                 if (bytes[0] == SECSIHandshake.ACK[0])
                 {
                     return;
