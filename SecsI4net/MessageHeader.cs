@@ -23,8 +23,8 @@ public readonly record struct MessageHeader
         BinaryPrimitives.WriteUInt16BigEndian(span, DeviceId);
         span.DangerousGetReferenceAt(2) = (byte)(S | (ReplyExpected ? 0b1000_0000 : 0));
         span.DangerousGetReferenceAt(3) = F;
-        span.DangerousGetReferenceAt(4) = 0;
-        span.DangerousGetReferenceAt(5) = (byte)MessageType;
+        span.DangerousGetReferenceAt(4) = (byte)128;
+        span.DangerousGetReferenceAt(5) = (byte)01;
         BinaryPrimitives.WriteInt32BigEndian(span[6..], Id);
         buffer.Advance(10);
     }

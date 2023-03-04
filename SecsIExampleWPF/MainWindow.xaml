@@ -17,7 +17,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click"
-            Content="Button" />
+            Content="S1F1" />
         <TextBlock
             Width="276"
             Height="203"
@@ -33,7 +33,7 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click1"
-            Content="Button" />
+            Content="模拟" />
 
     </Grid>
 </Window>

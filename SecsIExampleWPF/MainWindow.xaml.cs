@@ -18,20 +18,12 @@ namespace SecsIExampleWPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-          
-
-           
-
             sss.SendAsync(new SecsMessage(1,1));
-
         }
 
         public void ShowMessage(byte[] c)
         {
-
-
             Console.WriteLine(c);
-
         }
 
         private void Button_Click1(object sender, RoutedEventArgs e)
