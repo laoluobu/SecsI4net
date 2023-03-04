@@ -19,15 +19,13 @@ namespace SecsIExampleWPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
-                string S2F41UNLOCK = ":'S2F41' W  \n" +
+            string S2F41UNLOCK = ":'S2F41' W  \n" +
                                         "<L[2]\n" +
                                         "  <A[4] \"UNLOCK\">\n" +
                                         "  <L[0]\n" +
                                         "  >\n" +
                                         ">\n" +
                                         ".";
-
             sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
         }
 

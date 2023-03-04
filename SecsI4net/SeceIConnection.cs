@@ -1,7 +1,4 @@
-﻿
-using System;
-using System.Buffers;
-using System.Buffers.Binary;
+﻿using System.Buffers;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using CommunityToolkit.HighPerformance;
@@ -14,6 +11,8 @@ namespace SecsI4net
 {
     public class SeceIConnection : ISecsIConnection
     {
+        private static int msgNo =0;
+
         private ISerialPort Port;
 
         private bool isReadyToReceive;
@@ -21,6 +20,8 @@ namespace SecsI4net
         private Action<byte[]> MessageRecive;
 
         public int T3=3000;
+
+        public ushort deviceId = 0;
 
         public event EventHandler<EventArgs> ConnectionLost;
         public SeceIConnection(string COM, Action<byte[]> MessageRecive, int baudRate = 9600)
@@ -68,9 +69,15 @@ namespace SecsI4net
 
         public void SendAsync(SecsMessage message)
         {
+            if (msgNo == int.MaxValue)
+            {
+                msgNo = 0;
+            }
+            msgNo++;
+
             using (var buffer = new ArrayPoolBufferWriter<byte>(initialCapacity: 4096))
             {
-                EncodeMessage(message, 10, 0, buffer);
+                EncodeMessage(message, msgNo, deviceId, buffer);
                 ReadOnlyMemory<byte> msg=buffer.WrittenMemory;
                 ActionSendData(msg);
             }
@@ -91,7 +98,7 @@ namespace SecsI4net
                     }
                     if (i > T3)
                     {
-                        throw new Exception("T3 time out");
+                        throw new Exception("T3 time out！");
                     }
                     i++;
                     Thread.Sleep(1);

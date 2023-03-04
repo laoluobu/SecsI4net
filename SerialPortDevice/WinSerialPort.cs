@@ -30,9 +30,7 @@ namespace SerialPortDevice
                 Port.Handshake = Handshake.None;
                 Port.DataReceived += (o, k) =>
                 {
-                    //开辟接收缓冲区
                     byte[] bytesData = new byte[Port.BytesToRead];
-                    //从串口读取数据
                     Port.Read(bytesData, 0, bytesData.Length);
                     dataRecive.Invoke(bytesData);
                 };
