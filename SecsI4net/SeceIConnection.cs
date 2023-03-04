@@ -1,11 +1,11 @@
-﻿using System;
-using System.Buffers;
+﻿using System.Buffers.Binary;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 using Secs4Net;
 using SecsI4net.Enums;
+using SecsI4net.Utils;
 using SerialPortDevice;
 
 namespace SecsI4net
@@ -18,25 +18,25 @@ namespace SecsI4net
 
         private bool isReadyToReceive;
 
-        private Action<MessageHeader> MessageRecive;
+        private Action<SecsMessage> MessageRecive;
 
         public int T3=3000;
 
         public ushort deviceId = 0;
 
         public event EventHandler<EventArgs> ConnectionLost;
-        public SeceIConnection(string COM, Action<MessageHeader> MessageRecive, int baudRate = 9600)
+        public SeceIConnection(string COM, Action<SecsMessage> MessageRecive, int baudRate = 9600)
         {
             Port = new WinSerialPort();
             Port.Connection(COM, baudRate, DataRecive);
             this.MessageRecive = MessageRecive;
         }
 
-        private void DataRecive(ReadOnlyMemory<byte> bytes)
+        private void DataRecive(ReadOnlyMemory<byte> romByte)
         {
-            if (bytes.Length == 1)
+            if (romByte.Length == 1)
             {
-                switch (bytes.Span[0])
+                switch (romByte.Span[0])
                 {
                     case SECSIHandshake.ENQ:
                         Port.Write(new byte[] { SECSIHandshake.EOT });
@@ -50,14 +50,19 @@ namespace SecsI4net
                         return;
                 }
             }
-            var header = new MessageHeader();
-
-            var messageHaderSeq = bytes.Slice(1, 10);
-            var messageHeaderBytes = new byte[10];
-            messageHaderSeq.CopyTo(messageHeaderBytes);
-            MessageHeader.Decode(messageHeaderBytes, out header);
-            MessageRecive.Invoke(header);
-            Port.Write(new byte[] { SECSIHandshake.ACK });
+            try
+            {
+                CheckCKS(romByte);
+                var header = EncodeMessageHeader(romByte);
+                var item = EncodeItem(romByte);
+                var message = AssembleMessagae(header, item);
+                MessageRecive.Invoke(message);
+                Port.Write(new byte[] { SECSIHandshake.ACK });
+            }
+            catch(Exception e)
+            {
+                Trace.WriteLine(e);
+            }
         }
 
         public void Dispose()
@@ -123,7 +128,7 @@ namespace SecsI4net
 #endif
             lengthBytes[0] = (byte)(buffer.WrittenCount - length);
 
-            getCheksum(buffer);
+            ByteUtil.getCheksum(buffer);
         }
 
         public void SendAsync(byte[] message)
@@ -132,19 +137,49 @@ namespace SecsI4net
             Port.Write(message);
         }
 
-        private static void getCheksum(ArrayPoolBufferWriter<byte>  data)
+
+        private void CheckCKS(ReadOnlyMemory<byte> data)
         {
-            int cks = 0;
-            ReadOnlyMemory<byte> s = data.WrittenMemory;
-            var d=s.ToArray();
-            for(int i=1;i<d.Length;i++)
+            if (data.Length < 13)
             {
-                cks = (cks + d[i]) % 0xffff;
+                Port.Write(new byte[] { SECSIHandshake.NAK });
+                throw new Exception($"Receive bad byte");
             }
-            data.Write((byte)((cks & 0xff00) >> 8));
-            data.Write((byte)(cks & 0xff));
+            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, 10)));
+            var mshCheckSum = BinaryPrimitives.ReadInt16BigEndian(data.Slice(data.Length - 2).ToArray());
+            if (rigthCheksum != mshCheckSum)
+            {
+                Port.Write(new byte[] { SECSIHandshake.NAK });
+                throw new Exception($"Check Sum Error. Receive {mshCheckSum} instead of {rigthCheksum}");
+            }
         }
 
-     
+        private MessageHeader EncodeMessageHeader(ReadOnlyMemory<byte> data)
+        {
+            var messageHaderSeq = data.Slice(1, 10);
+            var header = new MessageHeader();
+            var messageHeaderBytes = new byte[10];
+            messageHaderSeq.CopyTo(messageHeaderBytes);
+            MessageHeader.Decode(messageHeaderBytes, out header);
+            return header;  
+        }
+
+        private Item? EncodeItem(ReadOnlyMemory<byte> data)
+        {
+            data = data.Slice(11);
+            if (data.Length == 2)
+            {
+                return null;
+            }
+            return null;
+        }
+
+        private SecsMessage AssembleMessagae(MessageHeader header,Item? item)
+        {
+            return new SecsMessage(header.S, header.F, header.ReplyExpected)
+            {
+                SecsItem = item,
+            };
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows;
+using Secs4Net;
 using Secs4Net.Sml;
 using SecsI4net;
 
@@ -14,7 +15,15 @@ namespace SecsIExampleWPF
         public MainWindow()
         {
             InitializeComponent();
-            sss = new SeceIConnection("COM2", ShowMessage);
+            try
+            {
+                sss = new SeceIConnection("COM2", ShowMessage);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -26,17 +35,24 @@ namespace SecsIExampleWPF
                                         "  >\n" +
                                         ">\n" +
                                         ".";
-            sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
+            try
+            {
+                sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
+            }catch(Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+            
         }
 
-        public void ShowMessage(MessageHeader c)
+        public void ShowMessage(SecsMessage c)
         {
 
             this.Dispatcher.BeginInvoke(
                         new Action(
                             delegate
                             {
-                                www.Text = c.ToString();
+                                www.Text = c.ToSml();
                             }
                             )
                         );

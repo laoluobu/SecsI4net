@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
+using CommunityToolkit.HighPerformance;
+using CommunityToolkit.HighPerformance.Buffers;
 
 namespace SecsI4net.Utils
 {
@@ -24,6 +24,31 @@ namespace SecsI4net.Utils
             src[1] = (byte)(value >> 8 & 0xFF);
             src[0] = (byte)(value & 0xFF);
             return src;
+        }
+
+        public static void getCheksum(ArrayPoolBufferWriter<byte> data)
+        {
+            int cks = 0;
+            ReadOnlyMemory<byte> s = data.WrittenMemory;
+            var d = s.ToArray();
+            for (int i = 1; i < d.Length; i++)
+            {
+                cks = (cks + d[i]) % 0xffff;
+            }
+            data.Write((byte)((cks & 0xff00) >> 8));
+            data.Write((byte)(cks & 0xff));
+        }
+
+        public static byte[] getCheksum(ReadOnlyMemory<byte> data)
+        {
+            int cks = 0;
+
+            var d = data.ToArray();
+            for (int i = 1; i < d.Length; i++)
+            {
+                cks = (cks + d[i]) % 0xffff;
+            }
+            return new byte[] { (byte)((cks & 0xff00) >> 8), (byte)(cks & 0xff) };
         }
     }
 }
