@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows;
+using Secs4Net;
+using Secs4Net.Sml;
 using SecsI4net;
 
 namespace SecsIExampleWPF
@@ -18,7 +20,16 @@ namespace SecsIExampleWPF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            sss.SendAsync(new SecsMessage(1,1));
+
+                string S2F41UNLOCK = ":'S2F41' W  \n" +
+                                        "<L[2]\n" +
+                                        "  <A[4] \"UNLOCK\">\n" +
+                                        "  <L[0]\n" +
+                                        "  >\n" +
+                                        ">\n" +
+                                        ".";
+
+            sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
         }
 
         public void ShowMessage(byte[] c)

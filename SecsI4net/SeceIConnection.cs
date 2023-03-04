@@ -113,7 +113,6 @@ namespace SecsI4net
                 ReplyExpected = msg.ReplyExpected,
                 S = msg.S,
                 F = msg.F,
-                MessageType = MessageType.DataMessage,
                 Id = id
             }.EncodeTo(buffer);
             msg.SecsItem?.EncodeTo(buffer);
