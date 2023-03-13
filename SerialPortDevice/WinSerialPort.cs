@@ -67,5 +67,10 @@ namespace SerialPortDevice
         {
             Port?.Dispose();
         }
+
+        public ReadOnlyMemory<byte> ReadToROM()
+        {
+            return new ReadOnlyMemory<byte>(Read());
+        }
     }
 }

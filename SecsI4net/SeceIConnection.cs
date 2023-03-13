@@ -1,4 +1,5 @@
-﻿using System.Buffers.Binary;
+﻿using System.Buffers;
+using System.Buffers.Binary;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -58,6 +59,7 @@ namespace SecsI4net
                 var message = AssembleMessagae(header, item);
                 MessageRecive.Invoke(message);
                 Port.Write(new byte[] { SECSIHandshake.ACK });
+                
             }
             catch(Exception e)
             {
@@ -101,7 +103,6 @@ namespace SecsI4net
                     Thread.Sleep(1);
                 }
                 Port.SendAsync(msg);
-                
             });
         }
 
@@ -145,7 +146,7 @@ namespace SecsI4net
                 Port.Write(new byte[] { SECSIHandshake.NAK });
                 throw new Exception($"Receive bad byte");
             }
-            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, 10)));
+            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, data.Length - 2)));
             var mshCheckSum = BinaryPrimitives.ReadInt16BigEndian(data.Slice(data.Length - 2).ToArray());
             if (rigthCheksum != mshCheckSum)
             {
@@ -171,7 +172,9 @@ namespace SecsI4net
             {
                 return null;
             }
-            return null;
+            var buffer=new ReadOnlySequence<byte>(data);
+            return Item.DecodeFromFullBuffer(ref buffer);
+            
         }
 
         private SecsMessage AssembleMessagae(MessageHeader header,Item? item)

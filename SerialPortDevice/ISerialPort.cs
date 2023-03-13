@@ -12,5 +12,7 @@ namespace SerialPortDevice
         void SendAsync(ReadOnlyMemory<byte> buffer);
 
         byte[] Read();
+
+        ReadOnlyMemory<byte> ReadToROM();
     }
 }
