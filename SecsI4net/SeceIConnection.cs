@@ -146,7 +146,7 @@ namespace SecsI4net
                 Port.Write(new byte[] { SECSIHandshake.NAK });
                 throw new Exception($"Receive bad byte");
             }
-            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, data.Length - 2)));
+            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, data.Length - 3)));
             var mshCheckSum = BinaryPrimitives.ReadInt16BigEndian(data.Slice(data.Length - 2).ToArray());
             if (rigthCheksum != mshCheckSum)
             {
