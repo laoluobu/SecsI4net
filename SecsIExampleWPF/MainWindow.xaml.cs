@@ -37,7 +37,7 @@ namespace SecsIExampleWPF
                                         ".";
             try
             {
-                sss.SendAsync(S2F41UNLOCK.ToSecsMessage());
+                sss.SendAsync(textBox.Text.ToSecsMessage());
             }catch(Exception ex)
             {
                 Console.WriteLine(ex);

@@ -35,8 +35,6 @@ public readonly record struct MessageHeader
     {
         ref var head = ref MemoryMarshal.GetReference(buffer);
         var s = Unsafe.Add(ref head, 2);
-
-        var iii=buffer[6..];
         header = new MessageHeader
         {
             DeviceId = BinaryPrimitives.ReadUInt16BigEndian(buffer[..2]),

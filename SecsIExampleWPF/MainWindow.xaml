@@ -13,7 +13,7 @@
         <Button
             Width="126"
             Height="53"
-            Margin="504,83,0,0"
+            Margin="490,349,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Click="Button_Click"
@@ -26,6 +26,15 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Top"
             Text="TextBlock"
+            TextWrapping="Wrap" />
+        <TextBox
+            x:Name="textBox"
+            Width="250"
+            Height="238"
+            Margin="438,47,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Text=":'S2F41' W  &#xD;&#xA;&lt;L[2]&#xD;&#xA;  &lt;A[4] &quot;UNLOCK&quot;&gt;&#xD;&#xA;  &lt;L[0]&#xD;&#xA;  &gt;&#xD;&#xA;&gt;&#xD;&#xA;."
             TextWrapping="Wrap" />
 
     </Grid>

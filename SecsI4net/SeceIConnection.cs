@@ -13,7 +13,7 @@ namespace SecsI4net
 {
     public class SeceIConnection : ISecsIConnection
     {
-        private static int msgNo =0;
+        private static int msgNo = 0;
 
         private ISerialPort Port;
 
@@ -21,11 +21,12 @@ namespace SecsI4net
 
         private Action<SecsMessage> MessageRecive;
 
-        public int T3=3000;
+        public int T3 = 3000;
 
         public ushort deviceId = 0;
 
         public event EventHandler<EventArgs> ConnectionLost;
+
         public SeceIConnection(string COM, Action<SecsMessage> MessageRecive, int baudRate = 9600)
         {
             Port = new WinSerialPort();
@@ -42,11 +43,14 @@ namespace SecsI4net
                     case SECSIHandshake.ENQ:
                         Port.Write(new byte[] { SECSIHandshake.EOT });
                         return;
+
                     case SECSIHandshake.EOT:
                         isReadyToReceive = true;
                         return;
+
                     case SECSIHandshake.NAK:
                         return;
+
                     case SECSIHandshake.ACK:
                         return;
                 }
@@ -59,9 +63,8 @@ namespace SecsI4net
                 var message = AssembleMessagae(header, item);
                 MessageRecive.Invoke(message);
                 Port.Write(new byte[] { SECSIHandshake.ACK });
-                
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Trace.WriteLine(e);
             }
@@ -77,33 +80,30 @@ namespace SecsI4net
             using (var buffer = new ArrayPoolBufferWriter<byte>(initialCapacity: 4096))
             {
                 EncodeMessage(message, msgNo == int.MaxValue ? 0 : msgNo++, deviceId, buffer);
-                ReadOnlyMemory<byte> msg=buffer.WrittenMemory;
+                ReadOnlyMemory<byte> msg = buffer.WrittenMemory;
                 ActionSendData(msg);
             }
         }
 
-        private async void ActionSendData(ReadOnlyMemory<byte> msg)
+        private void ActionSendData(ReadOnlyMemory<byte> msg)
         {
-           await Task.Run(() =>
+            Port.Write(new byte[] { SECSIHandshake.ENQ });
+            int i = 0;
+            while (true)
             {
-                Port.Write(new byte[] { SECSIHandshake.ENQ });
-                int i = 0;
-                while (true)
+                if (isReadyToReceive)
                 {
-                    if (isReadyToReceive)
-                    {
-                        isReadyToReceive = false;
-                        break;
-                    }
-                    if (i > T3)
-                    {
-                       throw new TimeoutException("T3 time out");
-                    }
-                    i++;
-                    Thread.Sleep(1);
+                    isReadyToReceive = false;
+                    break;
                 }
-                Port.SendAsync(msg);
-            });
+                if (i > T3)
+                {
+                    throw new TimeoutException("T3 time out");
+                }
+                i++;
+                Thread.Sleep(1);
+            }
+            Port.SendAsync(msg);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -123,7 +123,7 @@ namespace SecsI4net
             msg.SecsItem?.EncodeTo(buffer);
 
 #if NET
-            var lengthBytes = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(buffer.WrittenSpan),1);
+            var lengthBytes = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(buffer.WrittenSpan), 1);
 #else
         var lengthBytes = new Span<byte>(Unsafe.AsPointer(ref MemoryMarshal.GetReference(buffer.WrittenSpan)),1);
 #endif
@@ -138,7 +138,6 @@ namespace SecsI4net
             Port.Write(message);
         }
 
-
         private void CheckCKS(ReadOnlyMemory<byte> data)
         {
             if (data.Length < 13)
@@ -146,7 +145,7 @@ namespace SecsI4net
                 Port.Write(new byte[] { SECSIHandshake.NAK });
                 throw new Exception($"Receive bad byte");
             }
-            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum( data.Slice(1, data.Length - 3)));
+            var rigthCheksum = BinaryPrimitives.ReadInt16BigEndian(ByteUtil.getCheksum(data.Slice(1, data.Length - 3)));
             var mshCheckSum = BinaryPrimitives.ReadInt16BigEndian(data.Slice(data.Length - 2).ToArray());
             if (rigthCheksum != mshCheckSum)
             {
@@ -162,7 +161,7 @@ namespace SecsI4net
             var messageHeaderBytes = new byte[10];
             messageHaderSeq.CopyTo(messageHeaderBytes);
             MessageHeader.Decode(messageHeaderBytes, out header);
-            return header;  
+            return header;
         }
 
         private Item? EncodeItem(ReadOnlyMemory<byte> data)
@@ -172,12 +171,11 @@ namespace SecsI4net
             {
                 return null;
             }
-            var buffer=new ReadOnlySequence<byte>(data);
+            var buffer = new ReadOnlySequence<byte>(data);
             return Item.DecodeFromFullBuffer(ref buffer);
-            
         }
 
-        private SecsMessage AssembleMessagae(MessageHeader header,Item? item)
+        private SecsMessage AssembleMessagae(MessageHeader header, Item? item)
         {
             return new SecsMessage(header.S, header.F, header.ReplyExpected)
             {
