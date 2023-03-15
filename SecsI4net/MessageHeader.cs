@@ -37,11 +37,10 @@ public readonly record struct MessageHeader
         var s = Unsafe.Add(ref head, 2);
         header = new MessageHeader
         {
-            DeviceId = BinaryPrimitives.ReadUInt16BigEndian(buffer),
+            DeviceId = BinaryPrimitives.ReadUInt16BigEndian(buffer[..2]),
             ReplyExpected = (s & 0b1000_0000) != 0,
             S = (byte)(s & 0b0111_111),
             F = Unsafe.Add(ref head, 3),
-            MessageType = (MessageType)Unsafe.Add(ref head, 5),
             Id = BinaryPrimitives.ReadInt32BigEndian(buffer[6..]),
         };
     }
