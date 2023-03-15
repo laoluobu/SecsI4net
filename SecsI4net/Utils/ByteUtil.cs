@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using CommunityToolkit.HighPerformance;
 using CommunityToolkit.HighPerformance.Buffers;
 
@@ -30,7 +31,7 @@ namespace SecsI4net.Utils
         {
             int cks = 0;
             ReadOnlyMemory<byte> s = data.WrittenMemory;
-            var d = s.ToArray();
+            var d = s.Span;
             for (int i = 1; i < d.Length; i++)
             {
                 cks = (cks + d[i]) % 0xffff;
@@ -42,8 +43,7 @@ namespace SecsI4net.Utils
         public static byte[] getCheksum(ReadOnlyMemory<byte> data)
         {
             int cks = 0;
-
-            var d = data.ToArray();
+            var d = data.Span;
             for (int i = 1; i < d.Length; i++)
             {
                 cks = (cks + d[i]) % 0xffff;
