@@ -67,7 +67,7 @@ namespace SerialPortDevice
 
         public void Dispose()
         {
-           // Port?.Dispose();
+            Port?.Dispose();
         }
     }
 }
