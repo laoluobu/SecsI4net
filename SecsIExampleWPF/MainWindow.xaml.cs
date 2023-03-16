@@ -17,7 +17,7 @@ namespace SecsIExampleWPF
             InitializeComponent();
             try
             {
-                sss = new SeceIConnection("COM2", ShowMessage);
+                sss = new SeceIConnection("COM1", ShowMessage);
             }
             catch(Exception e)
             {
