@@ -14,5 +14,7 @@ namespace SerialPortDevice
         byte[] Read();
 
         ReadOnlyMemory<byte> ReadToROM();
+
+        bool IsOpen();
     }
 }

@@ -72,5 +72,10 @@ namespace SerialPortDevice
         {
             return new ReadOnlyMemory<byte>(Read());
         }
+
+        public bool IsOpen()
+        {
+            return Port.IsOpen;
+        }
     }
 }
