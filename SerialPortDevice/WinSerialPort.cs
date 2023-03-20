@@ -1,17 +1,25 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SerialPortDevice
 {
     public class WinSerialPort : ISerialPort
     {
+        
+
         private SerialPort Port;
 
         private bool Connected;
 
-        public void Connection(string COM, int baudRate, Action<ReadOnlyMemory<byte>> dataRecive)
+        private readonly object syncLock=new object();
+
+        public void Connection(string COM, int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000)
         {
-            if (Port!=null) return;
+            if (Port != null)
+                return;
             try
             {
                 Port = new SerialPort(COM);
@@ -19,7 +27,6 @@ namespace SerialPortDevice
                 {
                     return;
                 }
-
                 Port.BaudRate = baudRate;
                 Port.Parity = Parity.None;  //奇偶校验位
                 Port.StopBits = StopBits.One;
@@ -27,13 +34,31 @@ namespace SerialPortDevice
                 Port.Handshake = Handshake.None;
                 Port.DataReceived += (o, k) =>
                 {
-                    byte[] bytesData = new byte[Port.BytesToRead];
-                    Port.Read(bytesData, 0, bytesData.Length);
-                    if(bytesData.Length<1) return;
-                    dataRecive.Invoke(new ReadOnlyMemory<byte>(bytesData));
+                    byte[] bytesData;
+                    //确保收到完整数据
+                    lock (syncLock)
+                    {
+                        Thread.Sleep(100);
+                        var size = Port.BytesToRead;
+                        if (size < 2)
+                        {
+                            return;
+                        }
+                        Debug.WriteLine($"DataReceived({COM}): BytesToRead={size}");
+                        bytesData = new byte[size];
+                        Port.Read(bytesData, 0, bytesData.Length);
+                        if (bytesData.Length < 1)
+                        {
+                            return;
+                        }
+                    }
+                    Task.Run(() =>
+                    {
+                        dataRecive.Invoke(new ReadOnlyMemory<byte>(bytesData));
+                    });
                 };
-                Port.ReadTimeout = 1000;
-                Port.WriteTimeout = 1000;
+                Port.ReadTimeout = timeOut;
+                Port.WriteTimeout = timeOut;
                 Port.Open();
                 Connected = true;
             }
@@ -78,4 +103,5 @@ namespace SerialPortDevice
             return Port.IsOpen;
         }
     }
+
 }

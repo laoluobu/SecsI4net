@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Threading.Tasks;
 
 namespace SerialPortDevice
 {
     public interface ISerialPort :IDisposable
     {
-        void Connection(string COM,int baudRate, Action<ReadOnlyMemory<byte>> dataRecive);
+        void Connection(string COM,int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000);
 
         void Write(byte[] data);
 
