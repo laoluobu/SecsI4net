@@ -38,10 +38,11 @@ namespace SerialPortDevice
                     //确保收到完整数据
                     lock (syncLock)
                     {
-                        Thread.Sleep(100);
+                        Thread.Sleep(50);
                         var size = Port.BytesToRead;
                         if (size < 2)
                         {
+                            Debug.WriteLine("==========================");
                             return;
                         }
                         Debug.WriteLine($"DataReceived({COM}): BytesToRead={size}");
