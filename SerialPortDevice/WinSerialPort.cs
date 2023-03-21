@@ -42,7 +42,6 @@ namespace SerialPortDevice
                         var size = Port.BytesToRead;
                         if (size < 2)
                         {
-                            Debug.WriteLine("==========================");
                             return;
                         }
                         Debug.WriteLine($"DataReceived({COM}): BytesToRead={size}");
