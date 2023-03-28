@@ -4,7 +4,7 @@ namespace SerialPortDevice
 {
     public interface ISerialPort :IDisposable
     {
-        void Connection(string COM,int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000);
+        void Connection(string COM,int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000, int ReceiveInteval = 20);
 
         void Write(byte[] data);
 
