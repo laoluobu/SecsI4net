@@ -16,7 +16,7 @@ namespace SerialPortDevice
 
         private readonly object syncLock=new object();
 
-        public void Connection(string COM, int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000)
+        public void Connection(string COM, int baudRate, Action<ReadOnlyMemory<byte>> dataRecive,int timeOut=1000,int ReceiveInteval=20)
         {
             if (Port != null)
                 return;
@@ -38,7 +38,7 @@ namespace SerialPortDevice
                     //确保收到完整数据
                     lock (syncLock)
                     {
-                        Thread.Sleep(50);
+                        Thread.Sleep(ReceiveInteval);
                         var size = Port.BytesToRead;
                         if (size < 2)
                         {
