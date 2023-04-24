@@ -15,17 +15,15 @@ namespace SecsI4net
     {
         private static int msgNo = 0;
 
-        private ISerialPort Port;
+        private ISerialPort Port { get; }
 
         private bool isReadyToReceive;
 
-        private Action<SecsMessage> MessageRecive;
+        private Action<SecsMessage> MessageRecive { get; }
 
         public int T3 = 3000;
 
         public ushort deviceId = 0;
-
-        public event EventHandler<EventArgs> ConnectionLost;
 
         public SeceIConnection(string COM, Action<SecsMessage> MessageRecive, int baudRate = 9600)
         {
@@ -73,6 +71,7 @@ namespace SecsI4net
         public void Dispose()
         {
             Port?.Dispose();
+            GC.SuppressFinalize(this);
         }
 
         public void SendAsync(SecsMessage message)
