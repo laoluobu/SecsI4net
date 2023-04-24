@@ -76,12 +76,10 @@ namespace SecsI4net
 
         public void SendAsync(SecsMessage message)
         {
-            using (var buffer = new ArrayPoolBufferWriter<byte>(initialCapacity: 4096))
-            {
-                EncodeMessage(message, msgNo == int.MaxValue ? 0 : msgNo++, deviceId, buffer);
-                ReadOnlyMemory<byte> msg = buffer.WrittenMemory;
-                ActionSendData(msg);
-            }
+            using var buffer = new ArrayPoolBufferWriter<byte>(initialCapacity: 4096);
+            EncodeMessage(message, msgNo == int.MaxValue ? 0 : msgNo++, deviceId, buffer);
+            ReadOnlyMemory<byte> msg = buffer.WrittenMemory;
+            ActionSendData(msg);
         }
 
         private void ActionSendData(ReadOnlyMemory<byte> msg)
