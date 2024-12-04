@@ -5,11 +5,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-	 
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Secs4Net.Sml" Version="2.1.1" />
+    <PackageReference Include="Secs4Net.Sml" Version="2.4.3" />
   </ItemGroup>
 
   <ItemGroup>
