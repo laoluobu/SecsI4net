@@ -1,18 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+		<Version>1.0.1</Version>
+		<Authors>laoluobo</Authors>
+		<Description>Sece I Drive</Description>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Secs4Net.Sml" Version="2.4.3" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Secs4Net.Sml" Version="2.4.3" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SerialPortDevice\SerialPortDevice.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SerialPortDevice\SerialPortDevice.csproj" />
+	</ItemGroup>
 
 </Project>
