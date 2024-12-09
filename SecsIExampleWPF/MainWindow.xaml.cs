@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO.Ports;
 using System.Windows;
 using Secs4Net;
 using Secs4Net.Sml;
