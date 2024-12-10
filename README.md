@@ -1,5 +1,5 @@
 
-# secs4net
+# secsi4net
 
  [![Nuget](https://img.shields.io/nuget/dt/SecsI4net)](https://www.nuget.org/stats/packages/SecsI4net?groupby=Version) [![NuGet](https://img.shields.io/nuget/v/SecsI4net.svg)](https://www.nuget.org/packages/SecsI4net)
 
@@ -18,7 +18,7 @@ SECS-I/GEM implementation on .NET . base on [Secs4Net](https://github.com/mkjeff
 
 
 ```csharp
-var secei = new SeceIConnection("COM1", OnMessageReceive);
+var secei = new SecsIConnector("COM1", OnMessageReceive);
 
 string s2f42 = ":'S2F41' W  \n" +
                             "<L[2]\n" +
