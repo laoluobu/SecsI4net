@@ -11,7 +11,7 @@ using SerialPortDevice;
 
 namespace SecsI4net
 {
-    public class SeceIConnection : ISecsIConnection
+    public class SecsIConnector : ISecsIConnector
     {
         private static int msgNo = 0;
 
@@ -25,7 +25,7 @@ namespace SecsI4net
 
         public ushort deviceId = 0;
 
-        public SeceIConnection(string COM, Action<SecsMessage> MessageRecive, int baudRate = 9600)
+        public SecsIConnector(string COM, Action<SecsMessage> MessageRecive, int baudRate = 9600)
         {
             Port = new WinSerialPort();
             Port.Connection(COM, baudRate, DataRecive);

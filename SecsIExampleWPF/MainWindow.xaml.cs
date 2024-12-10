@@ -12,13 +12,13 @@ namespace SecsIExampleWPF
     /// </summary>
     public partial class MainWindow : Window
     {
-        ISecsIConnection sss;
+        ISecsIConnector sss;
         public MainWindow()
         {
             InitializeComponent();
             try
             {
-                sss = new SeceIConnection("COM1", ShowMessage);
+                sss = new SecsIConnector("COM1", ShowMessage);
             }
             catch(Exception e)
             {

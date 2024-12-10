@@ -22,10 +22,10 @@
 
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top">
             <TextBlock Text="Port:" Margin="0 0 10 0"/>
-            <ComboBox ItemsSource="{Binding PortList}" Width="70"  Margin="0 0 20 0"/>
-            <Button Content="Refresh Port" Margin="0 0 20 0"/>
-            
-            <Button Content="Connect"/>
+            <ComboBox Name="ComboBox_PortList" ItemsSource="{Binding PortList}" SelectedValue="{Binding CurrentPort}" Width="70"  Margin="0 0 20 0"/>
+            <Button Content="Refresh Port" Margin="0 0 20 0" Command="{Binding RefreshPortListCommand}"/>
+            <Button Content="Connect" Margin="0 0 20 0" Command="{Binding ConnectCommand}" />
+            <Button Content="Disconnect" Command="{Binding DisConnectCommand}"/>
         </StackPanel>
 
         <TextBox Grid.Row="1" />
@@ -39,12 +39,12 @@
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
 
-            <ListBox  ItemsSource="{Binding MessageList}" SelectedItem="{Binding CurrenKey}" />
+            <ListBox ItemsSource="{Binding MessageList}" SelectedItem="{Binding CurrenKey}" />
 
-            <TextBox Margin="10 0 10 0" Grid.Column="1" Text="{Binding CurrenMassage}"/>
+            <TextBox Margin="10 0 10 0" Grid.Column="1" Text="{Binding CurrenMassage ,UpdateSourceTrigger=PropertyChanged}"/>
 
             <StackPanel Grid.Column="2">
-                <Button Content="Send" />
+                <Button Content="SendMessage" Command="{Binding SendMessageCommand}"  />
             </StackPanel>
         </Grid>
 

@@ -2,7 +2,7 @@
 
 namespace SecsI4net
 {
-    public interface ISecsIConnection : IDisposable
+    public interface ISecsIConnector : IDisposable
     {
         void SendAsync(SecsMessage message);
 
