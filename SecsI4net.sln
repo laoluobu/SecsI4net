@@ -5,8 +5,6 @@ VisualStudioVersion = 17.4.33403.182
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecsI4net", "SecsI4net\SecsI4net.csproj", "{C1015F0D-6629-45F4-A2B9-65B44C21A18F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SecsIExampleWPF", "SecsIExampleWPF\SecsIExampleWPF.csproj", "{28EE5C78-B896-422A-877A-DF5C333740D9}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SerialPortDevice", "SerialPortDevice\SerialPortDevice.csproj", "{D646E83F-16C1-43BE-99B9-8EF7FEF52849}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{30B98A3B-8284-40D2-8FCA-07611CD17C2E}"
@@ -14,7 +12,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决�
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example", "Example\Example.csproj", "{7E2FA463-B91A-447D-8A9F-89F6BF159009}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Example\Example.csproj", "{7E2FA463-B91A-447D-8A9F-89F6BF159009}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,10 +24,6 @@ Global
 		{C1015F0D-6629-45F4-A2B9-65B44C21A18F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1015F0D-6629-45F4-A2B9-65B44C21A18F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1015F0D-6629-45F4-A2B9-65B44C21A18F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{28EE5C78-B896-422A-877A-DF5C333740D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{28EE5C78-B896-422A-877A-DF5C333740D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{28EE5C78-B896-422A-877A-DF5C333740D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{28EE5C78-B896-422A-877A-DF5C333740D9}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D646E83F-16C1-43BE-99B9-8EF7FEF52849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D646E83F-16C1-43BE-99B9-8EF7FEF52849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D646E83F-16C1-43BE-99B9-8EF7FEF52849}.Release|Any CPU.ActiveCfg = Release|Any CPU
