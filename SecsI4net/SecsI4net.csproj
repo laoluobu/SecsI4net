@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<AllowUnsafeBlocks>True</AllowUnsafeBlocks>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>laoluobo</Authors>
 		<Description>Sece I Drive</Description>
 	</PropertyGroup>
